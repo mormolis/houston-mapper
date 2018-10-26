@@ -28,13 +28,6 @@ public class JsonCreatorTest {
     }
 
     @Test
-    public void getTillNamesFromFile_shouldReadTheCsvAndCreateAListWithAllTheTills(){
-        Set<String> tillnames = jsonCreator.getTillNamesFromFile();
-
-        assertThat(tillnames.size(), equalTo(11));
-    }
-
-    @Test
     public void validateWindowTime_shouldTurnTimeToDefaultIfTimeNotGivenInRightFormat() {
         JsonCreator jsonCreator = new JsonCreator("1231231", "05000");
 
