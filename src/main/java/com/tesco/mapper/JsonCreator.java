@@ -1,43 +1,66 @@
 package com.tesco.mapper;
 
+import com.tesco.mapper.dtos.Defaults;
+import com.tesco.mapper.dtos.Tills;
+import com.tesco.mapper.utils.CsvReader;
+import com.tesco.mapper.utils.TillTypeIdentifier;
+import com.tesco.mapper.utils.TimeDivisioner;
+
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
 public class JsonCreator {
 
-    public static final String DEFAULT_WINDOW_FROM = "23:00";
-    public static final String DEFAULT_WINDOW_TO = "05:00";
+    private LocalDateTime windowFrom;
+    private LocalDateTime windowTo;
+    private Defaults defaults;
+    private Tills tills;
+    private CsvReader csvReader;
+    private TillTypeIdentifier tillTypeIdentifier;
+    private TimeDivisioner timeDivisioner;
 
-    private String windowFrom;
-    private String windowTo;
+    private String versionToDeploy;
 
-    public JsonCreator(String windowFrom, String windowTo) {
-        this.windowFrom =  validateWindowTime(windowFrom) ? windowFrom : DEFAULT_WINDOW_FROM;
-        this.windowTo = validateWindowTime(windowTo) ? windowTo : DEFAULT_WINDOW_TO;
+    public JsonCreator (LocalDateTime windowFrom,
+                        LocalDateTime windowTo,
+                        Defaults defaults,
+                        CsvReader csvReader,
+                        Tills tills,
+                        TillTypeIdentifier tillTypeIdentifier,
+                        TimeDivisioner timeDivisioner,
+                        String versionToDeploy){
+
+        this.windowFrom = windowFrom;
+        this.windowTo = windowTo;
+        this.defaults = defaults;
+        this.csvReader = csvReader;
+        this.tillTypeIdentifier = tillTypeIdentifier;
+        this.versionToDeploy = versionToDeploy;
+
+        populateTills();
     }
 
 
-
-    public JsonCreator() {
-        this.windowFrom =  DEFAULT_WINDOW_FROM;
-        this.windowTo = DEFAULT_WINDOW_TO;
-    }
-
-    private boolean validateWindowTime(String time) {
-
-        return time.matches("\\d\\d:\\d\\d") && isTimeWithinLimmits(time);
-    }
-
-    private boolean isTimeWithinLimmits(String time) {
-        String[] splitedTime = time.split(":");
-        int hour = Integer.parseInt(splitedTime[0]);
-        int minute = Integer.parseInt(splitedTime[1]);
-
-        return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
-    }
-
-    public String getWindowFrom() {
+    public LocalDateTime getWindowFrom() {
         return windowFrom;
     }
 
-    public String getWindowTo() {
+    public LocalDateTime getWindowTo() {
         return windowTo;
     }
+
+    private void populateTills(){
+        List<String> timestampForEachTill =  timeDivisioner.getTimeStamps();
+
+        Set<String> tillsUnformated = csvReader.getTillNamesFromFile();
+        int index = 0;
+        for (String unformatedTill : tillsUnformated) {
+            String tillNameFormated = tillTypeIdentifier.returnExtractor(unformatedTill).extractNameForJson(unformatedTill);
+            tills.populateWithEntry(tillNameFormated, versionToDeploy, timestampForEachTill.get(index));
+        }
+    }
+
+
 }

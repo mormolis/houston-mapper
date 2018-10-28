@@ -1,5 +1,5 @@
 package com.tesco.mapper.till.type.extractors;
 
-public interface NameExtractable {
+public interface NameExtractor {
     String extractNameForJson(String tillName);
 }

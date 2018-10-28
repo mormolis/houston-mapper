@@ -10,7 +10,7 @@ public class GhsExtractorTest {
     @Test
     public void extractNameForJson() {
 
-        GhsExtractor ghsExtractor = new GhsExtractor();
+        NameExtractor ghsExtractor = GhsExtractor.getInstance();
 
         assertThat(ghsExtractor.extractNameForJson("GHS9999FSR01"), equalTo("9999:01"));
         assertThat(ghsExtractor.extractNameForJson("GHS9999FSR011"), equalTo("9999:011"));
@@ -19,7 +19,7 @@ public class GhsExtractorTest {
 
     @Test
     public void extractNameForJson_shouldReturnEmptyStringWhenTillNameIsLessThan11Charachters(){
-        GhsExtractor ghsExtractor = new GhsExtractor();
+        NameExtractor ghsExtractor = GhsExtractor.getInstance();
 
         assertThat(ghsExtractor.extractNameForJson("GHS9999FS1"), equalTo(""));
     }

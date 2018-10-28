@@ -9,7 +9,7 @@ public class FastlaneExtractorTest {
 
     @Test
     public void extractNameForJson_shouldExtractJsonValueFromTillName() {
-        FastlaneExtractor fastlaneExtractor = new FastlaneExtractor();
+        NameExtractor fastlaneExtractor = FastlaneExtractor.getInstance();
 
         assertThat(fastlaneExtractor.extractNameForJson("9999FASTLANE9"), equalTo("9999:9"));
         assertThat(fastlaneExtractor.extractNameForJson("9999FASTLANE90"), equalTo("9999:90"));
@@ -19,7 +19,7 @@ public class FastlaneExtractorTest {
 
     @Test
     public void extractNameForJson_shouldReturnEmptyStringWhenTillNameIsLessThan13Charachters(){
-        FastlaneExtractor fastlaneExtractor = new FastlaneExtractor();
+        NameExtractor fastlaneExtractor = FastlaneExtractor.getInstance();
 
         assertThat(fastlaneExtractor.extractNameForJson("9999FASNE9"), equalTo(""));
     }

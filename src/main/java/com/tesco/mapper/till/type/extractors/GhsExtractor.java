@@ -1,6 +1,17 @@
 package com.tesco.mapper.till.type.extractors;
 
-public class GhsExtractor implements NameExtractable{
+public class GhsExtractor implements NameExtractor {
+
+    private static GhsExtractor ghsExtractor;
+
+    private GhsExtractor(){}
+
+    public static NameExtractor getInstance(){
+        if(ghsExtractor == null){
+            ghsExtractor = new GhsExtractor();
+        }
+        return ghsExtractor;
+    }
 
     @Override
     public String extractNameForJson(String tillName) {
