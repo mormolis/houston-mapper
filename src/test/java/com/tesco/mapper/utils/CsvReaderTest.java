@@ -1,5 +1,6 @@
 package com.tesco.mapper.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.util.Set;
@@ -12,9 +13,9 @@ public class CsvReaderTest {
     @Test
     public void getTillNamesFromFile_shouldReadTheCsvAndCreateAListWithAllTheTills(){
 
-        CsvReader csvReader = new CsvReader();
+        FileHandler fileHandler = new FileHandler(new ObjectMapper());
 
-        Set<String> tillnames = csvReader.getTillNamesFromFile();
+        Set<String> tillnames = fileHandler.getTillNamesFromFile();
 
         assertThat(tillnames.size(), equalTo(11));
     }

@@ -1,8 +1,12 @@
 package com.tesco.mapper.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Defaults {
+
+    @JsonProperty("default")
     private String defaultVersion;
 
     public Defaults(String defaultVersion) {

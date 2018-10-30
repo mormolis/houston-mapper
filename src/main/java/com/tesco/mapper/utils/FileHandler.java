@@ -1,5 +1,7 @@
 package com.tesco.mapper.utils;
 
+import com.tesco.mapper.dtos.Mapper;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,10 +12,17 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CsvReader {
+public class FileHandler {
 
     private static final String TILL_LIST_CSV = File.separator + "tills-to-deploy-to.csv";
+
+    private ObjectMapper objectMapper;
+
+    public FileHandler(ObjectMapper objectMapper){
+        this.objectMapper = objectMapper;
+    }
 
     public Set<String> getTillNamesFromFile() {
 
@@ -24,6 +33,18 @@ public class CsvReader {
             e.printStackTrace();
         }
         return tillNames;
+    }
+
+    public void createJsonFromObject(Mapper mapper) {
+        try {
+            String path = System.getenv("JSON_MAPPER_PATH");
+            File file = new File(path);
+            objectMapper.writeValue(file, mapper);
+        } catch (IOException e){
+            e.printStackTrace();
+            throw new RuntimeException("could not create mapper.json");
+        }
+
     }
 
     private void populateSetWithTillNamesFromCSV(Set<String> tillNames) throws URISyntaxException {

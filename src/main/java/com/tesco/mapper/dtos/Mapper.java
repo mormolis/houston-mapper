@@ -1,7 +1,12 @@
 package com.tesco.mapper.dtos;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Mapper {
 
     private String windowFrom;
@@ -9,13 +14,14 @@ public class Mapper {
 
     private Defaults defaults;
 
-    private Tills tills;
+    @JsonProperty("tills")
+    private Map<String, Map<String, String>> serverToVersionAndDate;
 
-    public Mapper(String windowFrom, String windowTo, Defaults defaults, Tills tills) {
+    public Mapper(String windowFrom, String windowTo, Defaults defaults) {
         this.windowFrom = windowFrom;
         this.windowTo = windowTo;
         this.defaults = defaults;
-        this.tills = tills;
+        this.serverToVersionAndDate = new HashMap<>();
     }
 
     public String getWindowFrom() {
@@ -30,25 +36,13 @@ public class Mapper {
         return defaults;
     }
 
-    public Tills getTills() {
-        return tills;
+    public void populateWithEntry(String server, String version, String date) {
+        Map<String, String> versionAndDate = new HashMap<>();
+        versionAndDate.put(version, date);
+        serverToVersionAndDate.put(server, versionAndDate);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Mapper)) return false;
-        Mapper mapper = (Mapper) o;
-        return Objects.equals(getWindowFrom(), mapper.getWindowFrom()) &&
-                Objects.equals(getWindowTo(), mapper.getWindowTo()) &&
-                Objects.equals(getDefaults(), mapper.getDefaults()) &&
-                Objects.equals(getTills(), mapper.getTills());
-    }
 
-    @Override
-    public int hashCode() {
 
-        return Objects.hash(getWindowFrom(), getWindowTo(), getDefaults(), getTills());
-    }
 
 }

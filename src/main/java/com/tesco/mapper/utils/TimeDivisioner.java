@@ -27,19 +27,6 @@ public class TimeDivisioner {
         this.numberOfTills = numberOfTills;
     }
 
-
-    public String getStartingTime() {
-        return startingTime;
-    }
-
-    public String getEndingTime() {
-        return endingTime;
-    }
-
-    public int getNumberOfTills() {
-        return numberOfTills;
-    }
-
     public long getWindowTimeInMinutes() {
         LocalTime start = LocalTime.parse(startingTime);
         LocalTime end = LocalTime.parse(endingTime);
@@ -48,7 +35,24 @@ public class TimeDivisioner {
         return minutes;
     }
 
-    private String extractHour(LocalDateTime localDateTime) {
+    public List<String> getTimeStamps() {
+
+        List<String> timestamps = new ArrayList<>();
+        int minutesPerTillGroup;
+        int availableMinutes = (int) getWindowTimeInMinutes();
+        int numberOfGroups = numberOfTills / NUMBER_OF_TILLS_PER_GROUP;
+
+        if (numberOfGroups != 0) {
+            minutesPerTillGroup = availableMinutes / numberOfGroups;
+            generateTimeStampsForGroupedTills(minutesPerTillGroup, numberOfGroups, timestamps);
+        } else {
+            generateTimeStampForNonGroupedTills(timestamps);
+        }
+
+        return timestamps;
+    }
+
+    public String extractHour(LocalDateTime localDateTime) {
         String hour = localDateTime.getHour() + "";
         if (hour.length() == 1) {
             return "0" + hour;
@@ -56,12 +60,20 @@ public class TimeDivisioner {
         return hour;
     }
 
-    private String extractMinute(LocalDateTime localDateTime) {
+    public String extractMinute(LocalDateTime localDateTime) {
         String minute = localDateTime.getMinute() + "";
         if (minute.length() == 1) {
             return "0" + minute;
         }
         return minute;
+    }
+
+    public String getStartingTime() {
+        return startingTime;
+    }
+
+    public String getEndingTime() {
+        return endingTime;
     }
 
     private boolean validateWindowTime(String time) {
@@ -81,23 +93,6 @@ public class TimeDivisioner {
         String hour = extractHour(localDateTime);
         String minute = extractMinute(localDateTime);
         return validateWindowTime(hour + ":" + minute) ? hour + ":" + minute : defaultTime;
-    }
-
-    public List<String> getTimeStamps() {
-
-        List<String> timestamps = new ArrayList<>();
-        int minutesPerTillGroup;
-        int availableMinutes = (int) getWindowTimeInMinutes();
-        int numberOfGroups = numberOfTills / NUMBER_OF_TILLS_PER_GROUP;
-
-        if (numberOfGroups != 0) {
-            minutesPerTillGroup = availableMinutes / numberOfGroups;
-            generateTimeStampsForGroupedTills(minutesPerTillGroup, numberOfGroups, timestamps);
-        } else {
-            generateTimeStampForNonGroupedTills(timestamps);
-        }
-
-        return timestamps;
     }
 
     private void generateTimeStampForNonGroupedTills(List<String> timestamps) {
